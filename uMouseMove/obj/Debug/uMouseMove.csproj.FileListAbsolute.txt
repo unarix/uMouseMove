@@ -1,0 +1,10 @@
+C:\Users\ntello\source\repos\uMouseMove\uMouseMove\bin\Debug\uMouseMove.exe.config
+C:\Users\ntello\source\repos\uMouseMove\uMouseMove\bin\Debug\uMouseMove.exe
+C:\Users\ntello\source\repos\uMouseMove\uMouseMove\bin\Debug\uMouseMove.pdb
+C:\Users\ntello\source\repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.csprojAssemblyReference.cache
+C:\Users\ntello\source\repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.Properties.Resources.resources
+C:\Users\ntello\source\repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.csproj.GenerateResource.cache
+C:\Users\ntello\source\repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.csproj.CoreCompileInputs.cache
+C:\Users\ntello\source\repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.exe
+C:\Users\ntello\source\repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.pdb
+C:\Users\ntello\source\repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.frmTimer.resources
