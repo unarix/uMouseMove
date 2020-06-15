@@ -21,4 +21,3 @@ C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.frmCo
 C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\bin\Debug\Newtonsoft.Json.dll
 C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.csproj.CopyComplete
 C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.frmAbout.resources
-C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.csprojAssemblyReference.cache

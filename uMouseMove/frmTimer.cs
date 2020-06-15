@@ -230,11 +230,12 @@ namespace uMouseMove
                 MouseOperations.SetCursorPosition(newPosition.X, newPosition.Y);
                 this.firstTimeScheduledExec = false;
             }
-            // avoid do click over controls
+
+            // Avoid do click over controls
             this.ShowHarryInvisibilityCloak(needMove && this.Settings.HarryInvisibilityCloak);
 
             // Evaluate if is neccesary move the mouse
-            if (needMove && this.harryInvisibilityCloak.Visible)
+            if (needMove)
             {
                 // Change mouse position emulating working
                 MouseOperations.SetCursorPosition(newPosition.X, newPosition.Y);
@@ -247,14 +248,14 @@ namespace uMouseMove
         {
             try
             {
-                if(show)
+                if (show)
                 {
                     // Create transparent form to avoid do click over important controls
                     this.harryInvisibilityCloak = harryInvisibilityCloak ?? new Form()
                     {
                         FormBorderStyle = FormBorderStyle.None,
                         BackColor = Color.Black,
-                        Opacity = Convert.ToDouble(this.Settings.HarryInvisibilityCloakOpacity)/100,
+                        Opacity = Convert.ToDouble(this.Settings.HarryInvisibilityCloakOpacity) / 100,
                         WindowState = FormWindowState.Maximized,
                         TopMost = true,
                         StartPosition = FormStartPosition.CenterScreen,
