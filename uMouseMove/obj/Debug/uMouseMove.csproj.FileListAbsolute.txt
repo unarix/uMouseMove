@@ -8,3 +8,17 @@ C:\Users\ntello\source\repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.csproj.C
 C:\Users\ntello\source\repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.exe
 C:\Users\ntello\source\repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.pdb
 C:\Users\ntello\source\repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.frmTimer.resources
+C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\bin\Debug\uMouseMove.exe.config
+C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\bin\Debug\uMouseMove.exe
+C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\bin\Debug\uMouseMove.pdb
+C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.frmTimer.resources
+C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.Properties.Resources.resources
+C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.csproj.GenerateResource.cache
+C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.csproj.CoreCompileInputs.cache
+C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.exe
+C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.pdb
+C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.frmConfig.resources
+C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\bin\Debug\Newtonsoft.Json.dll
+C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.csproj.CopyComplete
+C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.frmAbout.resources
+C:\Users\argatello\Source\Repos\uMouseMove\uMouseMove\obj\Debug\uMouseMove.csprojAssemblyReference.cache

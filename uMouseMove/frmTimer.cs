@@ -1,61 +1,302 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using uMouseMove.Entities;
+using uMouseMove.Entities.Helpers;
 
 namespace uMouseMove
 {
     public partial class frmTimer : Form
     {
+        bool ScheduledStartMode = false;
+        bool firstTimeScheduledExec = false;
+        bool showNotification = true;
+        Form harryInvisibilityCloak = null;
+        Setting.MousePosition mousePosition;
+
+        Schedule WorkingDaysSchedule { get; set; }
+        Schedule LaunchTimeSchedule { get; set; }
+        Setting Settings { get; set; }
+
         public frmTimer()
         {
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            timer1.Enabled = true; // Arranco el timer
+        #region Events
 
-            btnInit.Enabled = false;
-            btnStop.Enabled = true;
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            // Disable controls
+            this.btnStart.Enabled = false;
+            this.btnStop.Enabled = true;
+
+            // Load schedules
+            this.WorkingDaysSchedule = Schedule.GetScheduleObject(SettingsManager.Get(Schedule.ScheduleTypes.WorkingDays));
+            this.LaunchTimeSchedule = Schedule.GetScheduleObject(SettingsManager.Get(Schedule.ScheduleTypes.LaunchTime));
+            this.Settings = Setting.GetSettingObject(SettingsManager.Get());
+
+            // Set mouse position
+            this.mousePosition = Settings.MousePositionControl;
+
+            // Initialize timerCheckExecution
+            this.timerCheckExecution.Enabled = true;
+            this.timerCheckExecution.Tick += TimerCheckExecution_Tick;
+
+            // Initialize timerMouseMove
+            this.timerMouseMove.Enabled = false;
+            this.timerMouseMove.Interval = 1000;
+            this.timerMouseMove.Tick += TimerMouseMove_Tick;
+
+            // Show status message
+            this.ShowStatusMessage();
+
+            // Show balloon
+            this.ShowNotification("Starting...", $"{this.tsslExecutionStatus.Text} The app is running in hidden mode. Found me on try icon...");
+
+            // Hide form
+            this.WindowState = FormWindowState.Minimized;
+            this.ShowInTaskbar = false;
+
+            // Control menu state
+            (this.contextMenu.Items["tsmStart"] as ToolStripMenuItem).Checked = true;
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            timer1.Enabled = false; // Freno el timer
+            // Stop timerMoveMouse
+            this.timerMouseMove.Enabled = false;
+            this.timerCheckExecution.Enabled = false;
 
-            btnInit.Enabled = true;
-            btnStop.Enabled = false;
+            // Enable controls
+            this.btnStart.Enabled = true;
+            this.btnStop.Enabled = false;
+
+            // Show Balloon
+            this.ShowNotification("Stoping...", $"The proccess was stopped successfuly...");
+
+            // Control menu state
+            (this.contextMenu.Items["tsmStart"] as ToolStripMenuItem).Checked = true;
         }
+
+        private void TimerCheckExecution_Tick(object sender, EventArgs e)
+        {
+            // Set timerCheckExecution interval
+            this.timerCheckExecution.Interval = 1000; // 1 minute per tick
+
+            // Get schedule
+            this.ScheduledStartMode = this.Settings.ScheduledStartMode;
+            this.firstTimeScheduledExec = this.Settings.ScheduledStartMode;
+
+            // Check if must start and work away
+            if (this.ScheduledStartMode)
+            {
+                // Evaluate if the conditions are ideal to initialize the process
+                bool workTime = this.WorkingDaysSchedule.DoProcess();
+                bool launchTime = this.LaunchTimeSchedule.DoProcess();
+                if (workTime && !launchTime)
+                    this.timerMouseMove.Enabled = true;
+                else
+                    this.timerMouseMove.Enabled = false;
+
+                // Show status message
+                this.ShowStatusMessage(workTime, launchTime);
+            }
+            else
+                this.timerMouseMove.Enabled = true;
+        }
+
+        private void TimerMouseMove_Tick(object sender, EventArgs e)
+        {
+            // Starting to move the mouse
+            this.MoveCursor();
+        }
+
+        private void tssConfig_Click(object sender, EventArgs e)
+        {
+            frmConfig ofrmConfig = new frmConfig();
+            ofrmConfig.ShowDialog();
+            ofrmConfig.Dispose();
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                frmAbout ofrmAbout = new frmAbout() {
+                    StartPosition = FormStartPosition.CenterScreen,
+                    WindowState = FormWindowState.Normal,
+                    TopMost = true
+                };
+                ofrmAbout.ShowDialog();
+                ofrmAbout.Dispose();
+                ofrmAbout.Close();
+            }
+            catch (Exception) { throw; }
+        }
+
+        #endregion
+
+        #region NotifyIcon
+
+        private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+
+            this.contextMenu.Show(Control.MousePosition);
+        }
+
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            // Show form
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        #endregion
+
+        #region ContextMenu
+
+        private void tsmOpen_Click(object sender, EventArgs e)
+        {
+            // Show form
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        private void tsmStart_Click(object sender, EventArgs e)
+        {
+            this.btnStart.PerformClick();
+            (this.contextMenu.Items["tsmStop"] as ToolStripMenuItem).Checked = false;
+        }
+
+        private void tsmStop_Click(object sender, EventArgs e)
+        {
+            this.btnStop.PerformClick();
+            (this.contextMenu.Items["tsmStart"] as ToolStripMenuItem).Checked = false;
+        }
+
+        private void tsmSettings_Click(object sender, EventArgs e)
+        {
+            this.tssConfig.PerformClick();
+        }
+
+        private void tsmSilentMode_Click(object sender, EventArgs e)
+        {
+            this.showNotification = !this.showNotification;
+            (this.contextMenu.Items["tsmSilentMode"] as ToolStripMenuItem).Checked = this.showNotification ? false : true;
+        }
+
+        #endregion
+
+        #region Methods
 
         private void MoveCursor()
         {
+            // Generate random position
             Random r = new Random();
-            int rInt = r.Next(1000,2000); //for ints
+            int rInt = r.Next(1000, 2000); //for ints
             int range = 150;
             double dPosicion = r.NextDouble() * range;
             int iPosicion = (int)dPosicion;
+            bool needMove = false;
 
-            this.Cursor = new Cursor(Cursor.Current.Handle);
-
-            if (Cursor.Position.Y == 0)
+            // Set cursor position depending of preferences
+            Point newPosition = Cursor.Position;
+            switch (mousePosition)
             {
-                //Cursor.Position = new Point(iPosicion, 0);
-                uMouseMove.MouseOperations.SetCursorPosition(iPosicion, 0);
-                uMouseMove.MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftDown);
-                uMouseMove.MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftUp);
+                case Setting.MousePosition.Top:
+                    newPosition = new Point(iPosicion, Screen.PrimaryScreen.Bounds.Top);
+                    needMove = Cursor.Position.Y <= Screen.PrimaryScreen.Bounds.Top + 1;
+                    break;
+                case Setting.MousePosition.Left:
+                    newPosition = new Point(Screen.PrimaryScreen.Bounds.Left, iPosicion);
+                    needMove = Cursor.Position.X <= Screen.PrimaryScreen.Bounds.Left + 1;
+                    break;
+                case Setting.MousePosition.Right:
+                    newPosition = new Point(Screen.PrimaryScreen.Bounds.Right, iPosicion);
+                    needMove = Cursor.Position.X >= Screen.PrimaryScreen.Bounds.Right - 1;
+                    break;
+                case Setting.MousePosition.Bottom:
+                    newPosition = new Point(iPosicion, Screen.PrimaryScreen.Bounds.Bottom);
+                    needMove = Cursor.Position.Y >= Screen.PrimaryScreen.Bounds.Bottom - 1;
+                    break;
+                default:
+                    newPosition = new Point(0, 0);
+                    break;
+            }
+
+            // If it is the first time that scheduled start mode starts, put the mouse at position zero automatically
+            if (ScheduledStartMode && this.firstTimeScheduledExec)
+            {
+                MouseOperations.SetCursorPosition(newPosition.X, newPosition.Y);
+                this.firstTimeScheduledExec = false;
+            }
+            // avoid do click over controls
+            this.ShowHarryInvisibilityCloak(needMove && this.Settings.HarryInvisibilityCloak);
+
+            // Evaluate if is neccesary move the mouse
+            if (needMove && this.harryInvisibilityCloak.Visible)
+            {
+                // Change mouse position emulating working
+                MouseOperations.SetCursorPosition(newPosition.X, newPosition.Y);
+                MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftDown);
+                MouseOperations.MouseEvent(MouseOperations.MouseEventFlags.LeftUp);
             }
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private void ShowHarryInvisibilityCloak(bool show)
         {
-            MoveCursor();
+            try
+            {
+                if(show)
+                {
+                    // Create transparent form to avoid do click over important controls
+                    this.harryInvisibilityCloak = harryInvisibilityCloak ?? new Form()
+                    {
+                        FormBorderStyle = FormBorderStyle.None,
+                        BackColor = Color.Black,
+                        Opacity = Convert.ToDouble(this.Settings.HarryInvisibilityCloakOpacity)/100,
+                        WindowState = FormWindowState.Maximized,
+                        TopMost = true,
+                        StartPosition = FormStartPosition.CenterScreen,
+                        ShowInTaskbar = false
+                    };
+
+                    if (!this.harryInvisibilityCloak.Visible)
+                        this.harryInvisibilityCloak.Show();
+
+                    return;
+                }
+
+                if (this.harryInvisibilityCloak != null)
+                {
+                    this.harryInvisibilityCloak.Close();
+                    this.harryInvisibilityCloak.Dispose();
+                    this.harryInvisibilityCloak = null;
+                }
+            }
+            catch (Exception) { throw; }
         }
 
+        private void ShowStatusMessage(bool workTime = false, bool launchTime = false)
+        {
+            try
+            {
+                // Show status message
+                this.tsslExecutionStatus.Text = workTime && !launchTime ? "Hey! I'm working for you!" :
+                                                launchTime ? "Hey! I'm going to launch right now!" : "Hey! I'am waiting to enter in action...";
+
+                // Show mouse position
+                this.tsslMousePosition.Text = $"Mouse position is set to: {this.Settings.MousePositionControl.ToString()}";
+            }
+            catch (Exception) { throw; }
+        }
+
+        private void ShowNotification(string title, string msg)
+        {
+            if (this.showNotification)
+                this.notifyIcon.ShowBalloonTip(10000, title, msg, ToolTipIcon.Info);
+        }
+
+        #endregion
     }
 }
