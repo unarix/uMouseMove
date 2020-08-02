@@ -29,7 +29,7 @@ namespace uMouseMove
                 this.SetForm();
                 this.SetToolTips();
             }
-            catch (Exception ex) { this.ShowMessage(ex.Message, MessageBoxIcon.Error); }
+            catch (Exception ex) { UIHelper.ShowMessage(ex.Message, MessageBoxIcon.Error); }
         }
 
         private void chkWD_RandomTime_CheckedChanged(object sender, EventArgs e)
@@ -70,7 +70,7 @@ namespace uMouseMove
                 // Show result
                 this.ShowTestMessage(startTime, endTime);
             }
-            catch (Exception ex) { this.ShowMessage(ex.Message, MessageBoxIcon.Error); }
+            catch (Exception ex) { UIHelper.ShowMessage(ex.Message, MessageBoxIcon.Error); }
         }
 
         private void chkLT_RandomTime_CheckedChanged(object sender, EventArgs e)
@@ -112,7 +112,7 @@ namespace uMouseMove
                 // Show result
                 this.ShowTestMessage(startTime, endTime);
             }
-            catch (Exception ex) { this.ShowMessage(ex.Message, MessageBoxIcon.Error); }
+            catch (Exception ex) { UIHelper.ShowMessage(ex.Message, MessageBoxIcon.Error); }
         }
 
         private void cbMC_MouseZone_SelectedIndexChanged(object sender, EventArgs e)
@@ -152,7 +152,7 @@ namespace uMouseMove
                 this.Close();
                 this.Dispose();
             }
-            catch (Exception ex) { this.ShowMessage(ex.Message, MessageBoxIcon.Error); }
+            catch (Exception ex) { UIHelper.ShowMessage(ex.Message, MessageBoxIcon.Error); }
         }
 
         private void SaveSettings()
@@ -312,7 +312,8 @@ namespace uMouseMove
                 #region Set HarryInvisibilityCloak
 
                 this.chkMC_HarryInvisibilityCloak.Checked = this.Settings.HarryInvisibilityCloak;
-                this.nudMC_HarryInvisibilityCloakOpacity.Value = Convert.ToDecimal(this.Settings.HarryInvisibilityCloakOpacity);
+                this.nudMC_HarryInvisibilityCloakOpacity.Value = this.Settings.HarryInvisibilityCloakOpacity == 0 ?
+                                                                 1 : Convert.ToDecimal(this.Settings.HarryInvisibilityCloakOpacity);
 
                 #endregion
             }
@@ -388,11 +389,6 @@ namespace uMouseMove
 
         private void ShowTestMessage(DateTime startTime, DateTime endTime) =>
             MessageBox.Show($"The schedule will be starting at {startTime} and ending at {endTime}", "Schedule", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-        private void ShowMessage(string message, MessageBoxIcon msgboxIcon)
-        {
-            MessageBox.Show(message, "Schedule", MessageBoxButtons.OK, msgboxIcon);
-        }
 
         #endregion
     }

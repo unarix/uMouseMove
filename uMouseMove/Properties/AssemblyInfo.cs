@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("uMouseMove")]
 [assembly: AssemblyDescription("App developed to notify to monitor apps that we continue working when we are not in front of computer. It's a great idea, ha?")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("SiSNar Company S.A.")]
+[assembly: AssemblyCompany("Unarix Github")]
 [assembly: AssemblyProduct("uMouseMove")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
